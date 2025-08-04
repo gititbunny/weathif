@@ -29,6 +29,29 @@ def geocode_location(location_name):
     else:
         return None, None, None
 
+# --- Generate Climate Summary ---
+def generate_climate_summary(temp_change, rain_change, location, start, end):
+    summary = f"🌍 **Climate Simulation Summary for {location}**\n\n"
+
+    if temp_change == 0 and rain_change == 0:
+        return summary + "No simulated changes were applied."
+
+    if temp_change > 0:
+        summary += f"- Temperatures increased by **{temp_change}%**, which could lead to longer heatwaves, crop stress, and energy demand surges.\n"
+    elif temp_change < 0:
+        summary += f"- Temperatures decreased by **{abs(temp_change)}%**, potentially reducing heat-related risks but increasing cold stress in some areas.\n"
+
+    if rain_change < 0:
+        summary += f"- Rainfall dropped by **{abs(rain_change)}%**, increasing chances of **droughts**, water restrictions, and wildfire risks.\n"
+    elif rain_change > 0:
+        summary += f"- Rainfall increased by **{rain_change}%**, which may lead to **flooding**, erosion, and disease outbreaks in vulnerable areas.\n"
+
+    summary += f"\n📅 Time Period: **{start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}**\n"
+
+    summary += "\n⚠️ Always consider local context and adaptation strategies when interpreting climate shifts."
+
+    return summary
+
 # --- Location Input ---
 st.subheader("📍 Enter any location")
 location_input = st.text_input("City, country, or landmark:", "Johannesburg")
@@ -83,5 +106,10 @@ if "daily" in data:
 
     st.subheader("🌧️ Simulated Rainfall")
     st.line_chart(df.set_index("time")[["Simulated Rainfall (mm)"]])
+
+    # AI-style summary
+    st.subheader("🧠 AI-Style Climate Impact Summary")
+    summary = generate_climate_summary(temp_change, rain_change, display_name, start_date, end_date)
+    st.markdown(summary)
 else:
     st.error("⚠️ No weather data found for this location and date range.")
