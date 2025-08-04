@@ -47,7 +47,6 @@ def generate_climate_summary(temp_change, rain_change, location, start, end):
         summary += f"- Rainfall increased by **{rain_change}%**, which may lead to **flooding**, erosion, and disease outbreaks in vulnerable areas.\n"
 
     summary += f"\n📅 Time Period: **{start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}**\n"
-
     summary += "\n⚠️ Always consider local context and adaptation strategies when interpreting climate shifts."
 
     return summary
@@ -111,5 +110,6 @@ if "daily" in data:
     st.subheader("🧠 AI-Style Climate Impact Summary")
     summary = generate_climate_summary(temp_change, rain_change, display_name, start_date, end_date)
     st.markdown(summary)
+
 else:
     st.error("⚠️ No weather data found for this location and date range.")
