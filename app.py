@@ -2,8 +2,13 @@ import streamlit as st
 import pandas as pd
 import requests
 import urllib.parse
+import folium
+from streamlit_folium import st_folium
 
-# --- Streamlit setup ---
+# --- CONFIG ---
+API_KEY = "0af289b66a2d00d87f756b520df639df"
+
+# --- Streamlit UI setup ---
 st.set_page_config(page_title="Weathif", layout="wide")
 st.title("🌍 Weathif: Local Climate Storyteller")
 st.markdown("Type any location on Earth to simulate real climate shifts using live data.")
@@ -29,7 +34,7 @@ def geocode_location(location_name):
     else:
         return None, None, None
 
-# --- Generate Climate Summary ---
+# --- Generate AI-style summary ---
 def generate_climate_summary(temp_change, rain_change, location, start, end):
     summary = f"🌍 **Climate Simulation Summary for {location}**\n\n"
 
@@ -48,10 +53,9 @@ def generate_climate_summary(temp_change, rain_change, location, start, end):
 
     summary += f"\n📅 Time Period: **{start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}**\n"
     summary += "\n⚠️ Always consider local context and adaptation strategies when interpreting climate shifts."
-
     return summary
 
-# --- Location Input ---
+# --- Location input ---
 st.subheader("📍 Enter any location")
 location_input = st.text_input("City, country, or landmark:", "Johannesburg")
 
@@ -63,7 +67,62 @@ if not lat:
 
 st.success(f"✅ Found: {display_name}")
 
-# --- Date Range ---
+# --- Map Overlay Toggles ---
+st.subheader("🗺️ Live Weather Map Overlays")
+show_rain = st.checkbox("🌧️ Rain", value=True)
+show_clouds = st.checkbox("☁️ Clouds", value=True)
+show_temp = st.checkbox("🌡️ Temperature", value=False)
+show_satellite = st.checkbox("🛰️ Satellite View", value=False)
+
+# --- Create Folium map ---
+m = folium.Map(location=[lat, lon], zoom_start=6, tiles="OpenStreetMap")
+
+# --- Overlay Layers ---
+if show_rain:
+    folium.TileLayer(
+        tiles=f"https://tile.openweathermap.org/map/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
+        attr="OpenWeatherMap Rain",
+        name="Rain",
+        overlay=True,
+        control=True,
+        opacity=0.6
+    ).add_to(m)
+
+if show_clouds:
+    folium.TileLayer(
+        tiles=f"https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
+        attr="OpenWeatherMap Clouds",
+        name="Clouds",
+        overlay=True,
+        control=True,
+        opacity=0.6
+    ).add_to(m)
+
+if show_temp:
+    folium.TileLayer(
+        tiles=f"https://tile.openweathermap.org/map/temp_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
+        attr="OpenWeatherMap Temp",
+        name="Temperature",
+        overlay=True,
+        control=True,
+        opacity=0.6
+    ).add_to(m)
+
+if show_satellite:
+    folium.TileLayer(
+        tiles="http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        attr="Satellite",
+        name="Satellite",
+        overlay=True,
+        control=True
+    ).add_to(m)
+
+folium.LayerControl().add_to(m)
+
+# --- Display the map ---
+st_folium(m, width=900, height=500)
+
+# --- Date range selection ---
 col1, col2 = st.columns(2)
 with col1:
     start_date = st.date_input("Start date", pd.to_datetime("2023-01-01"))
@@ -82,12 +141,11 @@ url = (
 response = requests.get(url)
 data = response.json()
 
-# --- Process and display data ---
+# --- Climate simulation section ---
 if "daily" in data:
     df = pd.DataFrame(data["daily"])
     df["time"] = pd.to_datetime(df["time"])
 
-    # Sliders for simulation
     st.subheader("🎛️ Climate Shift Simulation")
     col3, col4 = st.columns(2)
     with col3:
@@ -95,21 +153,17 @@ if "daily" in data:
     with col4:
         rain_change = st.slider("💧 Rainfall change (%)", -50, 50, 0)
 
-    # Apply simulation
     df["Simulated Temp (°C)"] = df["temperature_2m_max"] * (1 + temp_change / 100)
     df["Simulated Rainfall (mm)"] = df["precipitation_sum"] * (1 + rain_change / 100)
 
-    # Charts
     st.subheader("🌡️ Simulated Max Temperature")
     st.line_chart(df.set_index("time")[["Simulated Temp (°C)"]])
 
     st.subheader("🌧️ Simulated Rainfall")
     st.line_chart(df.set_index("time")[["Simulated Rainfall (mm)"]])
 
-    # AI-style summary
     st.subheader("🧠 AI-Style Climate Impact Summary")
     summary = generate_climate_summary(temp_change, rain_change, display_name, start_date, end_date)
     st.markdown(summary)
-
 else:
     st.error("⚠️ No weather data found for this location and date range.")

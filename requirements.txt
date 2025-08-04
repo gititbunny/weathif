@@ -1,7 +1,5 @@
-pandas
-numpy
-matplotlib
 streamlit
+pandas
 requests
-geopandas
-rasterio
+folium
+streamlit-folium
