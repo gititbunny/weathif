@@ -11,17 +11,13 @@ API_KEY = "0af289b66a2d00d87f756b520df639df"
 # --- Streamlit UI setup ---
 st.set_page_config(page_title="Weathif", layout="wide")
 st.title("🌍 Weathif: Local Climate Storyteller")
-st.markdown("Type any location on Earth to simulate real climate shifts using live data.")
+st.markdown("Type or click a location to simulate real climate shifts using live data.")
 
-# --- Geocode user input using OpenStreetMap Nominatim ---
+# --- Geocoding Function ---
 @st.cache_data(show_spinner=False)
 def geocode_location(location_name):
     base_url = "https://nominatim.openstreetmap.org/search?"
-    params = {
-        "q": location_name,
-        "format": "json",
-        "limit": 1
-    }
+    params = {"q": location_name, "format": "json", "limit": 1}
     url = base_url + urllib.parse.urlencode(params)
     response = requests.get(url, headers={"User-Agent": "weathif-app"})
     results = response.json()
@@ -34,102 +30,93 @@ def geocode_location(location_name):
     else:
         return None, None, None
 
-# --- Generate AI-style summary ---
+# --- Summary Generator ---
 def generate_climate_summary(temp_change, rain_change, location, start, end):
     summary = f"🌍 **Climate Simulation Summary for {location}**\n\n"
-
     if temp_change == 0 and rain_change == 0:
         return summary + "No simulated changes were applied."
-
     if temp_change > 0:
-        summary += f"- Temperatures increased by **{temp_change}%**, which could lead to longer heatwaves, crop stress, and energy demand surges.\n"
+        summary += f"- Temperatures increased by **{temp_change}%**, causing longer heatwaves, crop stress, and energy demand surges.\n"
     elif temp_change < 0:
-        summary += f"- Temperatures decreased by **{abs(temp_change)}%**, potentially reducing heat-related risks but increasing cold stress in some areas.\n"
-
+        summary += f"- Temperatures decreased by **{abs(temp_change)}%**, possibly reducing heat risks but increasing cold stress.\n"
     if rain_change < 0:
-        summary += f"- Rainfall dropped by **{abs(rain_change)}%**, increasing chances of **droughts**, water restrictions, and wildfire risks.\n"
+        summary += f"- Rainfall dropped by **{abs(rain_change)}%**, raising drought, fire, and water scarcity risks.\n"
     elif rain_change > 0:
-        summary += f"- Rainfall increased by **{rain_change}%**, which may lead to **flooding**, erosion, and disease outbreaks in vulnerable areas.\n"
-
+        summary += f"- Rainfall increased by **{rain_change}%**, which could cause flooding and erosion in vulnerable areas.\n"
     summary += f"\n📅 Time Period: **{start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}**\n"
-    summary += "\n⚠️ Always consider local context and adaptation strategies when interpreting climate shifts."
+    summary += "\n⚠️ Consider local context and adaptation strategies when interpreting climate shifts."
     return summary
 
-# --- Location input ---
-st.subheader("📍 Enter any location")
-location_input = st.text_input("City, country, or landmark:", "Johannesburg")
+# --- Location Input ---
+st.subheader("📍 Location Input")
+location_input = st.text_input("Type a city, country, or landmark:", "Johannesburg")
 
-lat, lon, display_name = geocode_location(location_input)
-
-if not lat:
+typed_lat, typed_lon, display_name = geocode_location(location_input)
+if not typed_lat:
     st.error("❌ Location not found. Try a different name.")
     st.stop()
 
 st.success(f"✅ Found: {display_name}")
 
-# --- Map Overlay Toggles ---
-st.subheader("🗺️ Live Weather Map Overlays")
+# --- Weather Overlay Toggles ---
+st.subheader("🗺️ Weather Map (Click to change location)")
 show_rain = st.checkbox("🌧️ Rain", value=True)
 show_clouds = st.checkbox("☁️ Clouds", value=True)
 show_temp = st.checkbox("🌡️ Temperature", value=False)
 show_satellite = st.checkbox("🛰️ Satellite View", value=False)
 
-# --- Create Folium map ---
-m = folium.Map(location=[lat, lon], zoom_start=6, tiles="OpenStreetMap")
+# --- Create Map ---
+map_center = [typed_lat, typed_lon]
+m = folium.Map(location=map_center, zoom_start=6, tiles="OpenStreetMap")
 
-# --- Overlay Layers ---
+# --- Add overlays ---
 if show_rain:
     folium.TileLayer(
-        tiles=f"https://tile.openweathermap.org/map/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
-        attr="OpenWeatherMap Rain",
-        name="Rain",
-        overlay=True,
-        control=True,
-        opacity=0.6
+        f"https://tile.openweathermap.org/map/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
+        attr="Rain", name="Rain", overlay=True, control=True, opacity=0.6
     ).add_to(m)
 
 if show_clouds:
     folium.TileLayer(
-        tiles=f"https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
-        attr="OpenWeatherMap Clouds",
-        name="Clouds",
-        overlay=True,
-        control=True,
-        opacity=0.6
+        f"https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
+        attr="Clouds", name="Clouds", overlay=True, control=True, opacity=0.6
     ).add_to(m)
 
 if show_temp:
     folium.TileLayer(
-        tiles=f"https://tile.openweathermap.org/map/temp_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
-        attr="OpenWeatherMap Temp",
-        name="Temperature",
-        overlay=True,
-        control=True,
-        opacity=0.6
+        f"https://tile.openweathermap.org/map/temp_new/{{z}}/{{x}}/{{y}}.png?appid={API_KEY}",
+        attr="Temperature", name="Temperature", overlay=True, control=True, opacity=0.6
     ).add_to(m)
 
 if show_satellite:
     folium.TileLayer(
-        tiles="http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        attr="Satellite",
-        name="Satellite",
-        overlay=True,
-        control=True
+        "http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        attr="Satellite", name="Satellite", overlay=True, control=True
     ).add_to(m)
 
 folium.LayerControl().add_to(m)
+click_marker = folium.Marker(location=map_center, popup="Selected Location", draggable=False)
+click_marker.add_to(m)
 
-# --- Display the map ---
-st_folium(m, width=900, height=500)
+# --- Show map and get clicked location ---
+map_data = st_folium(m, width=900, height=500)
+clicked_coords = map_data.get("last_clicked")
 
-# --- Date range selection ---
+if clicked_coords:
+    lat, lon = clicked_coords["lat"], clicked_coords["lng"]
+    display_name = f"Lat: {lat:.2f}, Lon: {lon:.2f}"
+    st.info(f"📍 Map clicked at: {display_name}")
+else:
+    lat, lon = typed_lat, typed_lon
+
+# --- Date Range Selection ---
 col1, col2 = st.columns(2)
 with col1:
     start_date = st.date_input("Start date", pd.to_datetime("2023-01-01"))
 with col2:
     end_date = st.date_input("End date", pd.to_datetime("2023-12-31"))
 
-# --- Fetch live weather data from Open-Meteo ---
+# --- Fetch Weather Data ---
 url = (
     f"https://archive-api.open-meteo.com/v1/archive?"
     f"latitude={lat}&longitude={lon}"
@@ -141,7 +128,7 @@ url = (
 response = requests.get(url)
 data = response.json()
 
-# --- Climate simulation section ---
+# --- Simulation Charts + Summary ---
 if "daily" in data:
     df = pd.DataFrame(data["daily"])
     df["time"] = pd.to_datetime(df["time"])
@@ -165,5 +152,6 @@ if "daily" in data:
     st.subheader("🧠 AI-Style Climate Impact Summary")
     summary = generate_climate_summary(temp_change, rain_change, display_name, start_date, end_date)
     st.markdown(summary)
+
 else:
     st.error("⚠️ No weather data found for this location and date range.")
