@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 import os
 
-# Set location
+# Set location 
 latitude = -26.2041  # Johannesburg
 longitude = 28.0473
 location_name = "johannesburg"
