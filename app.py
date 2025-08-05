@@ -7,7 +7,6 @@ from geopy.geocoders import Nominatim
 from fpdf import FPDF
 from io import BytesIO
 
-
 # Page setup
 st.set_page_config(layout="wide", page_title="Weathif", page_icon="🌦️")
 st.markdown("""
@@ -56,7 +55,6 @@ rain_change = st.sidebar.slider("Change in Rainfall (%)", -100, 100, 0)
 
 current_temp = 28.0
 current_rain = 70.0
-
 future_temp = current_temp + temp_change
 future_rain = current_rain * (1 + rain_change / 100)
 
@@ -78,28 +76,15 @@ df = pd.DataFrame({
 fig, ax = plt.subplots()
 bar_width = 0.35
 index = range(len(df))
-
 bars_current = ax.bar(index, df["Current"], bar_width, label="Current", color="#A4C4E7")
 bars_future = ax.bar([i + bar_width for i in index], df["Future"], bar_width, label="Future", color="#EB8316")
-
-for bar in bars_current:
-    bar.set_linewidth(0)
-    bar.set_edgecolor("none")
-    bar.set_capstyle("round")
-    bar.set_path_effects([])
-
-for bar in bars_future:
-    bar.set_linewidth(0)
-    bar.set_edgecolor("none")
-    bar.set_capstyle("round")
-    bar.set_path_effects([])
 
 ax.set_xticks([i + bar_width / 2 for i in index])
 ax.set_xticklabels(df["Metric"], rotation=0)
 ax.legend()
 ax.set_ylabel("Value")
 ax.set_title("Climate Scenario Comparison")
-
+fig.tight_layout()
 st.pyplot(fig)
 
 # Weather Overlay
@@ -120,7 +105,6 @@ temp_layer = st.checkbox("Show Temperature Overlay")
 satellite_layer = st.checkbox("Show Satellite View")
 
 m = folium.Map(location=[lat, lon], zoom_start=7)
-
 for name, key in overlay_layers.items():
     if (
         (name == "🌧️ Rain" and rain_layer)
@@ -139,13 +123,13 @@ for name, key in overlay_layers.items():
 folium.Marker([lat, lon], tooltip=location).add_to(m)
 folium.LayerControl().add_to(m)
 st_folium(m, width=1000, height=500)
-
 st.markdown('</div>', unsafe_allow_html=True)
 
+# Scenario Report
 st.subheader("📝 Scenario Report")
 st.text(summary)
 
-# AI climate implication message
+# Environmental Impact Section
 st.subheader("🌍 Projected Impact & Environmental Consequences")
 implications = ""
 if future_temp >= 35:
@@ -157,20 +141,35 @@ if future_rain < 30:
 elif future_rain > 100:
     implications += "- 🌊 Increased flood risk, potential for water-logging and disease spread.\n"
 if implications == "":
-    implications = "- ✅ Conditions likely remain stable with minimal severe impacts."
+    implications = "- ✔ Conditions likely remain stable with minimal severe impacts."
 
 st.info(implications)
 
+# PDF Export
 def export_pdf():
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, "Climate Scenario Summary\n\n" + summary + "\n\nPredicted Impacts:\n" + implications)
-    pdf_bytes = pdf.output(dest='S').encode('latin1')
-    buffer = BytesIO()
-    buffer.write(pdf_bytes)
-    buffer.seek(0)
-    return buffer
+    pdf.set_text_color(59, 59, 59)
+    pdf.cell(200, 10, txt="Weathif Climate Report", ln=True, align="C")
+    pdf.ln(10)
+
+    pdf.set_font("Arial", size=11)
+    pdf.multi_cell(0, 10, f"Location: {location}")
+    pdf.multi_cell(0, 10, f"Current Temperature: {current_temp}°C")
+    pdf.multi_cell(0, 10, f"Current Rainfall: {current_rain} mm")
+    pdf.multi_cell(0, 10, f"Adjusted Temperature: {future_temp:.2f}°C")
+    pdf.multi_cell(0, 10, f"Adjusted Rainfall: {future_rain:.2f} mm")
+    pdf.ln(5)
+
+    pdf.set_font("Arial", style='B', size=11)
+    pdf.cell(0, 10, "Environmental Implications:", ln=True)
+    pdf.set_font("Arial", size=10)
+    for line in implications.split("\n"):
+        clean = line.replace("✔", "*").replace("✖", "X")
+        pdf.multi_cell(0, 8, clean)
+
+    return pdf.output(dest="S").encode("latin1")
 
 def export_png():
     buf = BytesIO()
@@ -178,6 +177,7 @@ def export_png():
     buf.seek(0)
     return buf
 
+# Export Options
 st.subheader("📤 Export Scenario Report")
 col1, col2 = st.columns(2)
 with col1:
