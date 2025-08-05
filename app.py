@@ -9,7 +9,6 @@ from io import BytesIO
 from PIL import Image
 import base64
 
-# Streamlit page config
 st.set_page_config(layout="wide", page_title="Weathif", page_icon="🌦️")
 st.title("Weathif: Local Climate Storyteller")
 
@@ -37,7 +36,7 @@ current_rain = 70.0  # mm/month
 future_temp = current_temp + temp_change
 future_rain = current_rain * (1 + rain_change / 100)
 
-# Summary for export
+# Summary for export and display
 summary = (
     f"Location: {location}\n"
     f"Current Avg Temp: {current_temp}°C\n"
@@ -58,8 +57,8 @@ fig, ax = plt.subplots()
 bar_width = 0.35
 index = range(len(df))
 
-ax.bar(index, df["Current"], bar_width, label="Current")
-ax.bar([i + bar_width for i in index], df["Future"], bar_width, label="Future")
+bar1 = ax.bar(index, df["Current"], bar_width, label="Current")
+bar2 = ax.bar([i + bar_width for i in index], df["Future"], bar_width, label="Future")
 
 ax.set_xticks([i + bar_width / 2 for i in index])
 ax.set_xticklabels(df["Metric"], rotation=0)
@@ -80,7 +79,6 @@ overlay_layers = {
     "🛰️ Satellite View": "satellite"
 }
 
-# Checkboxes
 rain_layer = st.checkbox("Show Rain Overlay")
 clouds_layer = st.checkbox("Show Cloud Overlay")
 temp_layer = st.checkbox("Show Temperature Overlay")
@@ -107,6 +105,10 @@ folium.Marker([lat, lon], tooltip=location).add_to(m)
 folium.LayerControl().add_to(m)
 st_folium(m, width=1000, height=500)
 
+# ✅ SCENARIO REPORT DISPLAY (RESTORED)
+st.subheader("📝 Scenario Report")
+st.text(summary)
+
 # Export PDF
 def export_pdf():
     pdf = FPDF()
@@ -114,8 +116,7 @@ def export_pdf():
     pdf.set_font("Arial", size=12)
     pdf.multi_cell(0, 10, "Climate Scenario Summary\n\n" + summary)
 
-    # Get PDF content as string and convert to bytes
-    pdf_bytes = pdf.output(dest="S").encode("latin1")
+    pdf_bytes = pdf.output(dest='S').encode('latin1')
     buffer = BytesIO()
     buffer.write(pdf_bytes)
     buffer.seek(0)
@@ -128,8 +129,8 @@ def export_png():
     buf.seek(0)
     return buf
 
+# ✅ EXPORT SECTION
 st.subheader("📤 Export Scenario Report")
-
 col1, col2 = st.columns(2)
 with col1:
     st.download_button("Download PDF", data=export_pdf(), file_name="weathif_report.pdf")
