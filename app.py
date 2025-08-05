@@ -150,24 +150,32 @@ def export_pdf():
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
+
+    # Title (short, no symbols or emojis)
     pdf.set_text_color(59, 59, 59)
-    pdf.cell(200, 10, txt="Weathif Climate Report", ln=True, align="C")
+    pdf.cell(0, 10, txt="Weathif Report", ln=True, align="L")
     pdf.ln(10)
 
+    # Climate details (short lines, no special chars)
     pdf.set_font("Arial", size=11)
     pdf.multi_cell(0, 10, f"Location: {location}")
-    pdf.multi_cell(0, 10, f"Current Temperature: {current_temp} deg C")
-    pdf.multi_cell(0, 10, f"Current Rainfall: {current_rain} mm")
-    pdf.multi_cell(0, 10, f"Adjusted Temperature: {future_temp:.2f} deg C")
-    pdf.multi_cell(0, 10, f"Adjusted Rainfall: {future_rain:.2f} mm")
+    pdf.multi_cell(0, 10, f"Current Temp: {current_temp} C")
+    pdf.multi_cell(0, 10, f"Future Temp: {future_temp:.1f} C")
+    pdf.multi_cell(0, 10, f"Current Rain: {current_rain} mm")
+    pdf.multi_cell(0, 10, f"Future Rain: {future_rain:.1f} mm")
     pdf.ln(5)
 
+    # Implications header
     pdf.set_font("Arial", style='B', size=11)
-    pdf.cell(0, 10, "Environmental Implications:", ln=True)
+    pdf.cell(0, 10, "Environmental Effects:", ln=True)
+
+    # Remove emojis/symbols from implications
+    clean_implications = implications.replace("🔥", "").replace("🌡️", "").replace("💧", "").replace("🌊", "").replace("✅", "").replace("-", "").strip().split("\n")
+
     pdf.set_font("Arial", size=10)
-    for line in implications.split("\n"):
-        clean = line.replace("✔", "*").replace("✖", "X").replace("🔥", "HIGH").replace("🌡️", "HEAT").replace("💧", "DRY").replace("🌊", "FLOOD")
-        pdf.multi_cell(0, 8, clean)
+    for line in clean_implications:
+        if line.strip():
+            pdf.multi_cell(0, 8, f"- {line.strip()}")
 
     return pdf.output(dest="S").encode("latin1")
 
