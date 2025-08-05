@@ -6,14 +6,41 @@ from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
 from fpdf import FPDF
 from io import BytesIO
-from PIL import Image
-import base64
 
+
+# Page setup
 st.set_page_config(layout="wide", page_title="Weathif", page_icon="🌦️")
-st.title("Weathif: Local Climate Storyteller")
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;900&display=swap');
+    html, body, [class*="css"]  {
+        font-family: 'Nunito Sans', sans-serif;
+        background-color: #EBEEDF;
+    }
+    .card {
+        background: linear-gradient(135deg, #A4C4E7, #EB8316);
+        padding: 1.5rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        color: #000;
+    }
+    .title-card {
+        background: linear-gradient(135deg, #C3A970, #EB8316);
+        padding: 1rem 2rem;
+        border-radius: 15px;
+        margin-bottom: 20px;
+    }
+    .stButton > button {
+        background-color: #A4C4E7 !important;
+        color: black;
+        border-radius: 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# Geolocation input
-location = st.text_input("Enter a location", "Tzaneen, South Africa")
+st.markdown('<div class="title-card"><h1 style="margin:0;">Weathif: Local Climate Storyteller 🌦️</h1></div>', unsafe_allow_html=True)
+
+location = st.text_input("📍 Enter a location", "Tzaneen, South Africa")
 geolocator = Nominatim(user_agent="weathif")
 geo = geolocator.geocode(location)
 
@@ -23,20 +50,16 @@ if geo is None:
 
 lat, lon = geo.latitude, geo.longitude
 
-# Sidebar sliders
 st.sidebar.header("🌧️ Climate Scenario Adjustments")
 temp_change = st.sidebar.slider("Change in Temperature (°C)", -5.0, 5.0, 0.0)
 rain_change = st.sidebar.slider("Change in Rainfall (%)", -100, 100, 0)
 
-# Simulated current weather data
-current_temp = 28.0  # example temp
-current_rain = 70.0  # mm/month
+current_temp = 28.0
+current_rain = 70.0
 
-# Scenario calculations
 future_temp = current_temp + temp_change
 future_rain = current_rain * (1 + rain_change / 100)
 
-# Summary for export and display
 summary = (
     f"Location: {location}\n"
     f"Current Avg Temp: {current_temp}°C\n"
@@ -45,7 +68,6 @@ summary = (
     f"Future Avg Rainfall: {future_rain:.1f} mm/month\n"
 )
 
-# Scenario visualization
 st.subheader("🌡️ Climate Scenario Impact")
 df = pd.DataFrame({
     "Metric": ["Avg Temperature (°C)", "Avg Rainfall (mm/month)"],
@@ -57,8 +79,20 @@ fig, ax = plt.subplots()
 bar_width = 0.35
 index = range(len(df))
 
-bar1 = ax.bar(index, df["Current"], bar_width, label="Current")
-bar2 = ax.bar([i + bar_width for i in index], df["Future"], bar_width, label="Future")
+bars_current = ax.bar(index, df["Current"], bar_width, label="Current", color="#A4C4E7")
+bars_future = ax.bar([i + bar_width for i in index], df["Future"], bar_width, label="Future", color="#EB8316")
+
+for bar in bars_current:
+    bar.set_linewidth(0)
+    bar.set_edgecolor("none")
+    bar.set_capstyle("round")
+    bar.set_path_effects([])
+
+for bar in bars_future:
+    bar.set_linewidth(0)
+    bar.set_edgecolor("none")
+    bar.set_capstyle("round")
+    bar.set_path_effects([])
 
 ax.set_xticks([i + bar_width / 2 for i in index])
 ax.set_xticklabels(df["Metric"], rotation=0)
@@ -68,8 +102,9 @@ ax.set_title("Climate Scenario Comparison")
 
 st.pyplot(fig)
 
-# Weather overlay map
+# Weather Overlay
 st.subheader("🗺️ Weather Map Overlay")
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
 overlay_url = "https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=0af289b66a2d00d87f756b520df639df"
 overlay_layers = {
@@ -105,61 +140,44 @@ folium.Marker([lat, lon], tooltip=location).add_to(m)
 folium.LayerControl().add_to(m)
 st_folium(m, width=1000, height=500)
 
-# ✅ SCENARIO REPORT DISPLAY (RESTORED)
+st.markdown('</div>', unsafe_allow_html=True)
+
 st.subheader("📝 Scenario Report")
 st.text(summary)
 
-# ✅ CLIMATE IMPACT INTERPRETATION
-temp_delta = future_temp - current_temp
-rain_delta_percent = ((future_rain - current_rain) / current_rain) * 100
+# AI climate implication message
+st.subheader("🌍 Projected Impact & Environmental Consequences")
+implications = ""
+if future_temp >= 35:
+    implications += "- 🔥 High risk of heatwaves, crop failures, and wildfires.\n"
+elif future_temp >= 32:
+    implications += "- 🌡️ Rising temperature may cause heat stress and alter local ecosystems.\n"
+if future_rain < 30:
+    implications += "- 💧 Severe drought risk, low water availability, reduced agricultural productivity.\n"
+elif future_rain > 100:
+    implications += "- 🌊 Increased flood risk, potential for water-logging and disease spread.\n"
+if implications == "":
+    implications = "- ✅ Conditions likely remain stable with minimal severe impacts."
 
-temp_risk = ""
-if temp_delta > 3:
-    temp_risk = "🔥 High risk of heatwaves, wildfires, and water scarcity."
-elif temp_delta > 1:
-    temp_risk = "⚠️ Moderate warming expected. May impact health and agriculture."
-elif temp_delta < -3:
-    temp_risk = "❄️ Significant cooling may reduce crop yields or affect biodiversity."
+st.info(implications)
 
-rain_risk = ""
-if rain_delta_percent < -50:
-    rain_risk = "🚱 Severe drought risk. Water restrictions likely. Crop failures possible."
-elif rain_delta_percent < -20:
-    rain_risk = "🌾 Moderate drought risk. Agriculture and drinking water may be strained."
-elif rain_delta_percent > 30:
-    rain_risk = "🌊 Flooding risk due to heavy rainfall increase. Infrastructure may be affected."
-
-climate_effects = "\n".join(filter(None, [
-    f"🌡️ Temperature Change: {temp_delta:+.1f}°C",
-    temp_risk,
-    f"🌧️ Rainfall Change: {rain_delta_percent:+.1f}%",
-    rain_risk
-]))
-
-st.markdown("### 🔍 Environmental Implications")
-st.text(climate_effects)
-
-# Export PDF
 def export_pdf():
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, "Climate Scenario Summary\n\n" + summary)
-
+    pdf.multi_cell(0, 10, "Climate Scenario Summary\n\n" + summary + "\n\nPredicted Impacts:\n" + implications)
     pdf_bytes = pdf.output(dest='S').encode('latin1')
     buffer = BytesIO()
     buffer.write(pdf_bytes)
     buffer.seek(0)
     return buffer
 
-# Export PNG
 def export_png():
     buf = BytesIO()
     fig.savefig(buf, format="png")
     buf.seek(0)
     return buf
 
-# ✅ EXPORT SECTION
 st.subheader("📤 Export Scenario Report")
 col1, col2 = st.columns(2)
 with col1:
