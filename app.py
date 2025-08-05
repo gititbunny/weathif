@@ -156,9 +156,9 @@ def export_pdf():
 
     pdf.set_font("Arial", size=11)
     pdf.multi_cell(0, 10, f"Location: {location}")
-    pdf.multi_cell(0, 10, f"Current Temperature: {current_temp}°C")
+    pdf.multi_cell(0, 10, f"Current Temperature: {current_temp} deg C")
     pdf.multi_cell(0, 10, f"Current Rainfall: {current_rain} mm")
-    pdf.multi_cell(0, 10, f"Adjusted Temperature: {future_temp:.2f}°C")
+    pdf.multi_cell(0, 10, f"Adjusted Temperature: {future_temp:.2f} deg C")
     pdf.multi_cell(0, 10, f"Adjusted Rainfall: {future_rain:.2f} mm")
     pdf.ln(5)
 
@@ -166,10 +166,11 @@ def export_pdf():
     pdf.cell(0, 10, "Environmental Implications:", ln=True)
     pdf.set_font("Arial", size=10)
     for line in implications.split("\n"):
-        clean = line.replace("✔", "*").replace("✖", "X")
+        clean = line.replace("✔", "*").replace("✖", "X").replace("🔥", "HIGH").replace("🌡️", "HEAT").replace("💧", "DRY").replace("🌊", "FLOOD")
         pdf.multi_cell(0, 8, clean)
 
     return pdf.output(dest="S").encode("latin1")
+
 
 def export_png():
     buf = BytesIO()
