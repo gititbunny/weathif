@@ -109,6 +109,36 @@ st_folium(m, width=1000, height=500)
 st.subheader("📝 Scenario Report")
 st.text(summary)
 
+# ✅ CLIMATE IMPACT INTERPRETATION
+temp_delta = future_temp - current_temp
+rain_delta_percent = ((future_rain - current_rain) / current_rain) * 100
+
+temp_risk = ""
+if temp_delta > 3:
+    temp_risk = "🔥 High risk of heatwaves, wildfires, and water scarcity."
+elif temp_delta > 1:
+    temp_risk = "⚠️ Moderate warming expected. May impact health and agriculture."
+elif temp_delta < -3:
+    temp_risk = "❄️ Significant cooling may reduce crop yields or affect biodiversity."
+
+rain_risk = ""
+if rain_delta_percent < -50:
+    rain_risk = "🚱 Severe drought risk. Water restrictions likely. Crop failures possible."
+elif rain_delta_percent < -20:
+    rain_risk = "🌾 Moderate drought risk. Agriculture and drinking water may be strained."
+elif rain_delta_percent > 30:
+    rain_risk = "🌊 Flooding risk due to heavy rainfall increase. Infrastructure may be affected."
+
+climate_effects = "\n".join(filter(None, [
+    f"🌡️ Temperature Change: {temp_delta:+.1f}°C",
+    temp_risk,
+    f"🌧️ Rainfall Change: {rain_delta_percent:+.1f}%",
+    rain_risk
+]))
+
+st.markdown("### 🔍 Environmental Implications")
+st.text(climate_effects)
+
 # Export PDF
 def export_pdf():
     pdf = FPDF()
