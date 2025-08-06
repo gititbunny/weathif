@@ -13,8 +13,8 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;900&display=swap');
     html, body, [class*="css"]  {
         font-family: 'Nunito Sans', sans-serif;
-        background-color: #EBEEDF;
-    }
+        background-color: #568de5;
+    } 
     .card {
         background: linear-gradient(135deg, #A4C4E7, #EB8316);
         padding: 1.5rem;
