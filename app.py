@@ -7,13 +7,13 @@ from geopy.geocoders import Nominatim
 
 
 # Page setup
-st.set_page_config(layout="wide", page_title="Weathif", page_icon="🌦️")
+st.set_page_config(layout="wide", page_title="Weathif", page_icon="logo.png")
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;900&display=swap');
     html, body, [class*="css"]  {
         font-family: 'Nunito Sans', sans-serif;
-        background-color: #568de5;
+        background-color: #568DE5;
     } 
     .card {
         background: linear-gradient(135deg, #A4C4E7, #EB8316);
