@@ -1,5 +1,7 @@
 streamlit
 pandas
-requests
+matplotlib
 folium
+geopy
 streamlit-folium
+Pillow
