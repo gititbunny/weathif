@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import folium
 from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
-from fpdf import FPDF
-from io import BytesIO
+
 
 # Page setup
 st.set_page_config(layout="wide", page_title="Weathif", page_icon="🌦️")
@@ -145,51 +144,4 @@ if implications == "":
 
 st.info(implications)
 
-# PDF Export
-def export_pdf():
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
 
-    # Title (short, no symbols or emojis)
-    pdf.set_text_color(59, 59, 59)
-    pdf.cell(0, 10, txt="Weathif Report", ln=True, align="L")
-    pdf.ln(10)
-
-    # Climate details (short lines, no special chars)
-    pdf.set_font("Arial", size=11)
-    pdf.multi_cell(0, 10, f"Location: {location}")
-    pdf.multi_cell(0, 10, f"Current Temp: {current_temp} C")
-    pdf.multi_cell(0, 10, f"Future Temp: {future_temp:.1f} C")
-    pdf.multi_cell(0, 10, f"Current Rain: {current_rain} mm")
-    pdf.multi_cell(0, 10, f"Future Rain: {future_rain:.1f} mm")
-    pdf.ln(5)
-
-    # Implications header
-    pdf.set_font("Arial", style='B', size=11)
-    pdf.cell(0, 10, "Environmental Effects:", ln=True)
-
-    # Remove emojis/symbols from implications
-    clean_implications = implications.replace("🔥", "").replace("🌡️", "").replace("💧", "").replace("🌊", "").replace("✅", "").replace("-", "").strip().split("\n")
-
-    pdf.set_font("Arial", size=10)
-    for line in clean_implications:
-        if line.strip():
-            pdf.multi_cell(0, 8, f"- {line.strip()}")
-
-    return pdf.output(dest="S").encode("latin1")
-
-
-def export_png():
-    buf = BytesIO()
-    fig.savefig(buf, format="png")
-    buf.seek(0)
-    return buf
-
-# Export Options
-st.subheader("📤 Export Scenario Report")
-col1, col2 = st.columns(2)
-with col1:
-    st.download_button("Download PDF", data=export_pdf(), file_name="weathif_report.pdf")
-with col2:
-    st.download_button("Download Chart as PNG", data=export_png(), file_name="weathif_chart.png")
