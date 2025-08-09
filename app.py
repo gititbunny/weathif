@@ -43,15 +43,24 @@ html, body, [class*="css"]  {{
 """, unsafe_allow_html=True)
 
 
+from pathlib import Path
+import base64
+
+def img_to_b64(path: Path) -> str:
+    return base64.b64encode(path.read_bytes()).decode()
+
+logo_b64 = img_to_b64(Path(__file__).parent / "assets" / "logo.png")
 
 st.markdown(
-    """
-    <div style="text-align:center; margin-bottom: 1rem;">
-        <img src="assets/logo.png" width="120">
+    f"""
+    <div style="text-align:center; margin-bottom:20px;">
+        <img src="data:image/png;base64,{logo_b64}" width="200">
     </div>
     """,
     unsafe_allow_html=True
 )
+
+
 
 st.markdown('<div class="title-card"><h1 style="margin:0;">Weathif: Local Climate Storyteller 🌦️</h1></div>', unsafe_allow_html=True)
 
