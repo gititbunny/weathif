@@ -24,7 +24,7 @@ st.markdown(f"""
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;900&display=swap');
 html, body, [class*="css"]  {{
   font-family: 'Nunito Sans', sans-serif;
-  background: {PALETTE["alabaster"]};
+  background: {PALETTE["alabaster"]} !important;
 }}
 .card {{
   background: linear-gradient(135deg, {PALETTE["powder"]}, {PALETTE["persimmon"]}20);
@@ -92,7 +92,7 @@ def reverse_geocode(lat: float, lon: float):
 # ----------------------- Live Weather -----------------------
 def fetch_current_weather(lat: float, lon: float):
     """
-    Returns (temp_c, rain_mm_hr) with graceful fallback if API/key missing.
+    Returns (temp_c, rain_mm_hr) with graceful fallback if API key missing.
     """
     if not OWM_KEY:
         return 28.0, 0.0
@@ -105,7 +105,7 @@ def fetch_current_weather(lat: float, lon: float):
         # OWM puts last-hour rain at rain["1h"]
         rain_1h = data.get("rain", {}).get("1h", 0.0)
         # Convert to a simple monthly proxy (rough illustrative): mm/month ~ 30 * 24 * (rain mm per hour when raining fraction)
-        # Here we just scale a bit so charts aren’t flat; tweak as you wire real climatology.
+        # Scale a bit so charts aren’t flat;.
         monthly_guess = min(200.0, rain_1h * 30)  # cap for display sanity
         return float(temp_c), float(monthly_guess)
     except Exception:
