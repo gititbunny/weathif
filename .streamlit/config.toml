@@ -1,1 +1,6 @@
-config.toml
+[theme]
+base = "light"
+backgroundColor = "#EBF3FF"         
+secondaryBackgroundColor = "#E0ECFF"  
+textColor = "#000000"
+primaryColor = "#EB8316"
