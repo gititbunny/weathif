@@ -43,6 +43,31 @@ html, body, [class*="css"]  {{
 """, unsafe_allow_html=True)
 
 
+st.markdown("""
+<style>
+input[aria-label="📍 Enter a location"]{
+  border: 2px solid #EB8316 !important;
+  border-radius: 12px !important;
+  background-color: #fff !important;
+  padding: 10px 12px !important; 
+}
+
+
+div[data-testid="stTextInput"] > div > div {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+
+input[aria-label="📍 Enter a location"]:focus{
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(235,131,22,0.25) !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 from pathlib import Path
 import base64
 
@@ -122,9 +147,12 @@ def fetch_current_weather(lat: float, lon: float):
 
 # ----------------------- UI: Location -----------------------
 colL, colR = st.columns([2,1], vertical_alignment="center")
+
 with colL:
-    q = st.text_input("📍 Enter a location", "Tzaneen, South Africa")
+    q = st.text_input("📍 Enter a location", "Tzaneen, South Africa", key="loc_input")
+
 with colR:
+    st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
     use_click = st.toggle("Enable map click-to-update", value=True)
 
 loc = geocode_place(q)
