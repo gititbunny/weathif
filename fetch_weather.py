@@ -7,7 +7,7 @@ latitude = -26.2041  # Johannesburg
 longitude = 28.0473
 location_name = "johannesburg"
 
-# Date range (1 full year)
+# Date range
 start_date = "2023-01-01"
 end_date = "2023-12-31"
 
@@ -33,4 +33,4 @@ os.makedirs("data/processed", exist_ok=True)
 # Save CSV
 output_path = f"data/processed/{location_name}_2023_weather.csv"
 df.to_csv(output_path, index=False)
-print(f"✅ Weather data saved to {output_path}")
+print(f"Weather data saved to {output_path}")
