@@ -174,17 +174,25 @@ with colR:
     use_click = st.toggle("Enable map click-to-update", value=True)
 
 loc = geocode_place(q)
-if not loc:
-    st.error("Location not found. Please try another place.")
-    st.stop()
 
 if "loc" not in st.session_state:
-    st.session_state.loc = loc
+    if not loc:
+        st.error("Location not found. Please try another place.")
+        st.stop()
+    st.session_state.loc = loc        
+    st.session_state.last_q = q          
+
 else:
-    st.session_state.loc.update({"name": q})
+    if q != st.session_state.get("last_q") and loc:
+        st.session_state.loc = loc       # replace name + lat + lon together
+        st.session_state.last_q = q
+    elif not loc and not st.session_state.get("loc"):
+        st.error("Location not found. Please try another place.")
+        st.stop()
 
 lat, lon = st.session_state.loc["lat"], st.session_state.loc["lon"]
 place_name = st.session_state.loc.get("name", q)
+
 
 st.sidebar.header("Climate Scenario Adjustments")
 temp_change = st.sidebar.slider("Change in Temperature (°C)", -5.0, 5.0, 0.0, step=0.5)
