@@ -184,7 +184,7 @@ if "loc" not in st.session_state:
 
 else:
     if q != st.session_state.get("last_q") and loc:
-        st.session_state.loc = loc       # replace name + lat + lon together
+        st.session_state.loc = loc    
         st.session_state.last_q = q
     elif not loc and not st.session_state.get("loc"):
         st.error("Location not found. Please try another place.")
