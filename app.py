@@ -86,7 +86,7 @@ st.markdown(
 
 
 
-st.markdown('<div class="title-card"><h1 style="margin:0;">Weathif: Local Climate Storyteller 🌦️</h1></div>', unsafe_allow_html=True)
+st.markdown('<div class="title-card"><h1 style="margin:0;">Weathif: Local Climate Scenario Simulator</h1></div>', unsafe_allow_html=True)
 
 OWM_KEY = st.secrets.get("OWM_API_KEY", os.environ.get("OWM_API_KEY", "").strip())
 TILE_URL_TMPL = "https://tile.openweathermap.org/map/{layer}/{{z}}/{{x}}/{{y}}.png?appid=" + OWM_KEY if OWM_KEY else ""
