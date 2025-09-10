@@ -8,6 +8,7 @@ import folium
 from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
+from datetime import date, timedelta
 
 st.set_page_config(layout="wide", page_title="Weathif", page_icon="assets/icon.png")
 
@@ -101,7 +102,6 @@ OVERLAY_LAYERS = {
 @st.cache_resource(show_spinner=False)
 def _geocoder():
     g = Nominatim(user_agent="weathif")
-    # throttle to be nice to Nominatim
     g.geocode = RateLimiter(g.geocode, min_delay_seconds=1)
     g.reverse = RateLimiter(g.reverse, min_delay_seconds=1)
     return g
@@ -120,20 +120,49 @@ def reverse_geocode(lat: float, lon: float):
     loc = g.reverse((lat, lon), language="en", timeout=10, zoom=12)
     return loc.address if loc else f"{lat:.4f}, {lon:.4f}"
 
+@st.cache_data(ttl=60 * 60)  
+def estimate_monthly_rain_mm(lat: float, lon: float) -> float:
+    end = date.today()
+    start = end - timedelta(days=30)
+    url = (
+        "https://archive-api.open-meteo.com/v1/archive"
+        f"?latitude={lat}&longitude={lon}"
+        f"&start_date={start.isoformat()}&end_date={end.isoformat()}"
+        "&daily=precipitation_sum&timezone=auto"
+    )
+    r = requests.get(url, timeout=15)
+    r.raise_for_status()
+    data = r.json()
+    daily = data.get("daily", {})
+    vals = daily.get("precipitation_sum", [])
+
+    if not vals:
+        return 70.0  
+
+    return float(pd.Series(vals).sum())
+
+
 def fetch_current_weather(lat: float, lon: float):
-    if not OWM_KEY:
-        return 28.0, 0.0
+    temp_c = 28.0 
     try:
-        url = "https://api.openweathermap.org/data/2.5/weather"
-        r = requests.get(url, params={"lat": lat, "lon": lon, "appid": OWM_KEY, "units": "metric"}, timeout=10)
-        r.raise_for_status()
-        data = r.json()
-        temp_c = data.get("main", {}).get("temp", 28.0)
-        rain_1h = data.get("rain", {}).get("1h", 0.0)
-        monthly_guess = min(200.0, rain_1h * 30) 
-        return float(temp_c), float(monthly_guess)
+        if OWM_KEY:  
+            r = requests.get(
+                "https://api.openweathermap.org/data/2.5/weather",
+                params={"lat": lat, "lon": lon, "appid": OWM_KEY, "units": "metric"},
+                timeout=10
+            )
+            r.raise_for_status()
+            temp_c = float(r.json().get("main", {}).get("temp", 28.0))
     except Exception:
-        return 28.0, 70.0
+        pass
+
+    try:
+        monthly_rain = estimate_monthly_rain_mm(lat, lon)
+    except Exception:
+        monthly_rain = 70.0
+
+    return temp_c, monthly_rain
+
 
 colL, colR = st.columns([2,1], vertical_alignment="center")
 
@@ -175,15 +204,23 @@ df = pd.DataFrame({
 fig, ax = plt.subplots()
 bar_width = 0.35
 index = range(len(df))
-ax.bar(index, df["Current"], bar_width, label="Current")
-ax.bar([i + bar_width for i in index], df["Future"], bar_width, label="Future")
+
+bars_current = ax.bar(index, df["Current"], bar_width, label="Current")
+bars_future  = ax.bar([i + bar_width for i in index], df["Future"], bar_width, label="Future")
+
 ax.set_xticks([i + bar_width / 2 for i in index])
 ax.set_xticklabels(df["Metric"], rotation=0)
+
 ax.legend()
 ax.set_ylabel("Value")
 ax.set_title("Climate Scenario Comparison")
+
+for container in ax.containers:
+    ax.bar_label(container, fmt="%.1f", padding=3)
+
 fig.tight_layout()
 st.pyplot(fig)
+
 
 st.subheader("Weather Map Overlay")
 st.markdown('<div class="card">', unsafe_allow_html=True)
