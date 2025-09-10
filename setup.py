@@ -20,7 +20,7 @@ for file in files:
     with open(file, "w", encoding="utf-8") as f:
         if file == "README.md":
             f.write(
-                "# Weathif: Local Climate Storyteller\n\n"
+                "# Weathif: Local Climate Scenario Simulator\n\n"
                 "A Python-powered tool to simulate 'What If' local climate changes."
             )
         elif file == "requirements.txt":
@@ -30,4 +30,4 @@ for file in files:
         else:
             f.write("")
 
-print("✅ Project structure created.")
+print("Project structure created.")
