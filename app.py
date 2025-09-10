@@ -9,7 +9,6 @@ from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
 
-# ----------------------- Config & Styles -----------------------
 st.set_page_config(layout="wide", page_title="Weathif", page_icon="assets/icon.png")
 
 PALETTE = {
@@ -45,7 +44,7 @@ html, body, [class*="css"]  {{
 
 st.markdown("""
 <style>
-input[aria-label="📍 Enter a location"]{
+input[aria-label="Enter a location"]{
   border: 2px solid #EB8316 !important;
   border-radius: 12px !important;
   background-color: #fff !important;
@@ -60,7 +59,7 @@ div[data-testid="stTextInput"] > div > div {
 }
 
 
-input[aria-label="📍 Enter a location"]:focus{
+input[aria-label="Enter a location"]:focus{
   outline: none !important;
   box-shadow: 0 0 0 3px rgba(235,131,22,0.25) !important;
 }
@@ -89,7 +88,6 @@ st.markdown(
 
 st.markdown('<div class="title-card"><h1 style="margin:0;">Weathif: Local Climate Storyteller 🌦️</h1></div>', unsafe_allow_html=True)
 
-# ----------------------- Secrets & Globals -----------------------
 OWM_KEY = st.secrets.get("OWM_API_KEY", os.environ.get("OWM_API_KEY", "").strip())
 TILE_URL_TMPL = "https://tile.openweathermap.org/map/{layer}/{{z}}/{{x}}/{{y}}.png?appid=" + OWM_KEY if OWM_KEY else ""
 
@@ -100,7 +98,6 @@ OVERLAY_LAYERS = {
     "🛰️ Satellite View": "satellite",
 }
 
-# ----------------------- Geocoding -----------------------
 @st.cache_resource(show_spinner=False)
 def _geocoder():
     g = Nominatim(user_agent="weathif")
@@ -123,11 +120,7 @@ def reverse_geocode(lat: float, lon: float):
     loc = g.reverse((lat, lon), language="en", timeout=10, zoom=12)
     return loc.address if loc else f"{lat:.4f}, {lon:.4f}"
 
-# ----------------------- Live Weather -----------------------
 def fetch_current_weather(lat: float, lon: float):
-    """
-    Returns (temp_c, rain_mm_hr) with graceful fallback if API key missing.
-    """
     if not OWM_KEY:
         return 28.0, 0.0
     try:
@@ -136,20 +129,16 @@ def fetch_current_weather(lat: float, lon: float):
         r.raise_for_status()
         data = r.json()
         temp_c = data.get("main", {}).get("temp", 28.0)
-        # OWM puts last-hour rain at rain["1h"]
         rain_1h = data.get("rain", {}).get("1h", 0.0)
-        # Convert to a simple monthly proxy (rough illustrative): mm/month ~ 30 * 24 * (rain mm per hour when raining fraction)
-        # Scale a bit so charts aren’t flat;.
-        monthly_guess = min(200.0, rain_1h * 30)  # cap for display sanity
+        monthly_guess = min(200.0, rain_1h * 30) 
         return float(temp_c), float(monthly_guess)
     except Exception:
         return 28.0, 70.0
 
-# ----------------------- UI: Location -----------------------
 colL, colR = st.columns([2,1], vertical_alignment="center")
 
 with colL:
-    q = st.text_input("📍 Enter a location", "Tzaneen, South Africa", key="loc_input")
+    q = st.text_input("Enter a location", "Tzaneen, South Africa", key="loc_input")
 
 with colR:
     st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
@@ -163,24 +152,20 @@ if not loc:
 if "loc" not in st.session_state:
     st.session_state.loc = loc
 else:
-    # update name but keep any click-updated coordinates if user edited the text field significantly
     st.session_state.loc.update({"name": q})
 
 lat, lon = st.session_state.loc["lat"], st.session_state.loc["lon"]
 place_name = st.session_state.loc.get("name", q)
 
-# ----------------------- Sidebar: Scenario -----------------------
-st.sidebar.header("🌧️ Climate Scenario Adjustments")
+st.sidebar.header("Climate Scenario Adjustments")
 temp_change = st.sidebar.slider("Change in Temperature (°C)", -5.0, 5.0, 0.0, step=0.5)
 rain_change = st.sidebar.slider("Change in Rainfall (%)", -100, 100, 0, step=5)
 
-# Live current (fallback-safe)
 current_temp, current_rain = fetch_current_weather(lat, lon)
 future_temp = current_temp + temp_change
 future_rain = max(0.0, current_rain * (1 + rain_change / 100))
 
-# ----------------------- Charts -----------------------
-st.subheader("🌡️ Climate Scenario Impact")
+st.subheader("Climate Scenario Impact")
 df = pd.DataFrame({
     "Metric": ["Avg Temperature (°C)", "Avg Rainfall (mm/month)"],
     "Current": [current_temp, current_rain],
@@ -200,8 +185,7 @@ ax.set_title("Climate Scenario Comparison")
 fig.tight_layout()
 st.pyplot(fig)
 
-# ----------------------- Map & Overlays -----------------------
-st.subheader("🗺️ Weather Map Overlay")
+st.subheader("Weather Map Overlay")
 st.markdown('<div class="card">', unsafe_allow_html=True)
 
 layer_choices = st.multiselect(
@@ -212,7 +196,6 @@ layer_choices = st.multiselect(
 opacity = st.slider("Overlay opacity", 0.1, 1.0, 0.7)
 
 m = folium.Map(location=[lat, lon], zoom_start=8, control_scale=True, tiles="OpenStreetMap")
-# Add selected overlays (skip if no key)
 for name in layer_choices:
     layer_key = OVERLAY_LAYERS[name]
     if OWM_KEY and TILE_URL_TMPL:
@@ -232,19 +215,16 @@ m_state = st_folium(m, width=None, height=520)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Click-to-update location
 if use_click and m_state and m_state.get("last_clicked"):
     new_lat = m_state["last_clicked"]["lat"]
     new_lon = m_state["last_clicked"]["lng"]
     st.session_state.loc["lat"] = new_lat
     st.session_state.loc["lon"] = new_lon
-    # update display name via reverse geocode (non-blocking-ish)
     addr = reverse_geocode(new_lat, new_lon)
     st.session_state.loc["name"] = addr
     st.rerun()
 
-# ----------------------- Scenario Report -----------------------
-st.subheader("📝 Scenario Report")
+st.subheader("Scenario Report")
 summary = (
     f"Location: {st.session_state.loc['name']}\n"
     f"Current Avg Temp: {current_temp:.1f} °C\n"
@@ -254,8 +234,7 @@ summary = (
 )
 st.text(summary)
 
-# ----------------------- Impact Logic -----------------------
-st.subheader("🌍 Projected Impact & Environmental Consequences")
+st.subheader("Projected Impact & Environmental Consequences")
 implications = []
 if future_temp >= 35:
     implications.append("🔥 High risk of heatwaves, crop failures, and wildfires.")
@@ -266,7 +245,7 @@ if future_rain < 30:
 elif future_rain > 100:
     implications.append("🌊 Increased flood risk, potential for water-logging and disease spread.")
 if not implications:
-    implications.append("✔ Conditions likely remain stable with minimal severe impacts.")
+    implications.append("🌝 Conditions likely remain stable with minimal severe impacts.")
 
 st.info("\n".join(f"- {x}" for x in implications))
 
