@@ -1,0 +1,516 @@
+/* =========================
+   ENSO climate driver
+========================= */
+
+.enso-context {
+  padding: 86px 0 92px;
+
+  background: #102d34;
+  color: white;
+}
+
+.enso-context .eyebrow {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.enso-context__header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 70px;
+  align-items: end;
+}
+
+.enso-context__header h2 {
+  margin: 0;
+
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  line-height: 0.94;
+  letter-spacing: -0.058em;
+  font-weight: 620;
+}
+
+.enso-status {
+  min-width: 270px;
+
+  padding: 22px;
+
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.enso-status__label {
+  display: block;
+
+  margin-bottom: 18px;
+
+  color: rgba(255, 255, 255, 0.48);
+
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.enso-status > strong {
+  display: block;
+
+  font-size: 2rem;
+  letter-spacing: -0.04em;
+}
+
+.enso-status__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  margin-top: 16px;
+}
+
+.enso-status__meta span {
+  padding: 7px 10px;
+
+  border-radius: 999px;
+
+  background: rgba(223, 138, 98, 0.14);
+  color: #f0a37f;
+
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+
+/* =========================
+   ENSO field
+========================= */
+
+.enso-field {
+  position: relative;
+
+  margin-top: 38px;
+  padding: 28px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 30px;
+
+  background:
+    linear-gradient(
+      110deg,
+      rgba(79, 145, 170, 0.14),
+      rgba(255, 255, 255, 0.02) 48%,
+      rgba(207, 113, 71, 0.16)
+    );
+}
+
+.enso-field__rings {
+  position: absolute;
+
+  width: 520px;
+  height: 520px;
+
+  right: -170px;
+  top: -250px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
+}
+
+.enso-field__rings::before,
+.enso-field__rings::after {
+  content: "";
+
+  position: absolute;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
+}
+
+.enso-field__rings::before {
+  inset: 70px;
+}
+
+.enso-field__rings::after {
+  inset: 145px;
+}
+
+
+/* =========================
+   Field heading
+========================= */
+
+.enso-field__top {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.enso-field__top > div:last-child {
+  text-align: right;
+}
+
+.enso-field__top span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: rgba(255, 255, 255, 0.43);
+
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.enso-field__top strong {
+  font-size: 0.9rem;
+}
+
+
+/* =========================
+   ENSO scale
+========================= */
+
+.enso-scale {
+  position: relative;
+  z-index: 3;
+
+  padding: 76px 16px 42px;
+}
+
+.enso-scale__labels,
+.enso-scale__range {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.enso-scale__labels {
+  margin-bottom: 16px;
+
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.enso-scale__labels span:nth-child(2),
+.enso-scale__range span:nth-child(2) {
+  text-align: center;
+}
+
+.enso-scale__labels span:last-child,
+.enso-scale__range span:last-child {
+  text-align: right;
+}
+
+.enso-scale__labels span:first-child {
+  color: #8fc0d1;
+}
+
+.enso-scale__labels span:last-child {
+  color: #df8a62;
+}
+
+.enso-scale__track {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: 40% 20% 40%;
+
+  height: 14px;
+
+  border-radius: 999px;
+
+  overflow: visible;
+}
+
+.enso-scale__cold,
+.enso-scale__neutral,
+.enso-scale__warm {
+  height: 14px;
+}
+
+.enso-scale__cold {
+  border-radius: 999px 0 0 999px;
+
+  background:
+    linear-gradient(
+      to right,
+      #3d7892,
+      #7faec0
+    );
+}
+
+.enso-scale__neutral {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.enso-scale__warm {
+  border-radius: 0 999px 999px 0;
+
+  background:
+    linear-gradient(
+      to right,
+      #c99875,
+      #d66f49
+    );
+}
+
+.enso-scale__marker {
+  position: absolute;
+
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 18px;
+  height: 18px;
+
+  border: 4px solid white;
+  border-radius: 50%;
+
+  background: #102d34;
+
+  box-shadow:
+    0 0 0 6px rgba(255, 255, 255, 0.11);
+}
+
+.enso-scale__marker span,
+.enso-scale__marker strong {
+  position: absolute;
+
+  left: 50%;
+
+  width: 120px;
+
+  text-align: center;
+
+  transform: translateX(-50%);
+}
+
+.enso-scale__marker span {
+  bottom: 28px;
+
+  color: rgba(255, 255, 255, 0.5);
+
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.enso-scale__marker strong {
+  bottom: 44px;
+
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+}
+
+.enso-scale__range {
+  margin-top: 13px;
+
+  color: rgba(255, 255, 255, 0.34);
+
+  font-size: 0.64rem;
+}
+
+
+/* =========================
+   ENSO indices
+========================= */
+
+.enso-indices {
+  position: relative;
+  z-index: 3;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  margin-top: 14px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
+}
+
+.enso-indices article {
+  padding: 22px;
+}
+
+.enso-indices article + article {
+  border-left: 1px solid rgba(255, 255, 255, 0.11);
+}
+
+.enso-indices span,
+.enso-indices small {
+  display: block;
+}
+
+.enso-indices span {
+  margin-bottom: 12px;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.enso-indices strong {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.enso-indices small {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+
+/* =========================
+   Official outlook
+========================= */
+
+.enso-outlook {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+
+  margin-top: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+
+  overflow: hidden;
+}
+
+.enso-outlook > div {
+  padding: 24px;
+}
+
+.enso-outlook > div + div {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.enso-outlook span {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.enso-outlook p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+.enso-context__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+
+  margin-top: 20px;
+
+  color: rgba(255, 255, 255, 0.4);
+
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.enso-context__footer p {
+  max-width: 720px;
+  margin: 0;
+}
+
+.enso-context__footer span {
+  white-space: nowrap;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 900px) {
+  .enso-context__header {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .enso-status {
+    min-width: 0;
+  }
+
+  .enso-outlook {
+    grid-template-columns: 1fr;
+  }
+
+  .enso-outlook > div + div {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+}
+
+@media (max-width: 700px) {
+  .enso-context {
+    padding: 60px 0 66px;
+  }
+
+  .enso-field {
+    padding: 20px;
+  }
+
+  .enso-field__top {
+    flex-direction: column;
+  }
+
+  .enso-field__top > div:last-child {
+    text-align: left;
+  }
+
+  .enso-scale {
+    padding-inline: 0;
+  }
+
+  .enso-indices {
+    grid-template-columns: 1fr;
+  }
+
+  .enso-indices article + article {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.11);
+  }
+
+  .enso-context__footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .enso-context__footer span {
+    white-space: normal;
+  }
+}
