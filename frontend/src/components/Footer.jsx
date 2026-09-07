@@ -66,7 +66,7 @@ function Footer() {
 
           <p>
             Exploratory climate software (not a weather
-            warning or scientific forecasting service.)
+            warning or scientific forecasting service)
           </p>
 
           <p>
