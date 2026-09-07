@@ -1,0 +1,261 @@
+/* =========================
+   Climate memory
+========================= */
+
+.climate-memory {
+  padding: 78px 0 84px;
+
+  background: #ebe5d8;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.climate-memory__top {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 60px;
+  align-items: end;
+}
+
+.climate-memory__top h2 {
+  margin: 0;
+
+  font-size: clamp(2.5rem, 5vw, 4.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+  font-weight: 620;
+}
+
+.climate-memory__period {
+  min-width: 290px;
+
+  padding-left: 24px;
+
+  border-left: 1px solid var(--line);
+}
+
+.climate-memory__period span,
+.climate-memory__period small {
+  display: block;
+
+  color: var(--muted);
+}
+
+.climate-memory__period span {
+  margin-bottom: 7px;
+
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.climate-memory__period strong {
+  display: block;
+
+  margin-bottom: 6px;
+
+  font-size: 1rem;
+}
+
+.climate-memory__period small {
+  max-width: 290px;
+
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+
+/* =========================
+   Visual comparison
+========================= */
+
+.climate-memory__visuals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  margin-top: 42px;
+}
+
+.memory-panel {
+  min-width: 0;
+
+  padding: 28px;
+
+  border: 1px solid rgba(24, 34, 29, 0.12);
+  border-radius: 26px;
+
+  background: rgba(251, 250, 246, 0.74);
+}
+
+.memory-panel--temperature {
+  border-top: 4px solid var(--heat);
+}
+
+.memory-panel--rainfall {
+  border-top: 4px solid #4f91aa;
+}
+
+
+/* =========================
+   Panel heading
+========================= */
+
+.memory-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.memory-panel__label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--muted);
+
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.memory-panel__header h3 {
+  max-width: 310px;
+  margin: 0;
+
+  font-size: 1.08rem;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.memory-panel__change {
+  flex-shrink: 0;
+
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.memory-panel--temperature .memory-panel__change {
+  color: var(--heat);
+}
+
+.memory-panel--rainfall .memory-panel__change {
+  color: #3f7f98;
+}
+
+
+/* =========================
+   Charts
+========================= */
+
+.memory-chart {
+  width: 100%;
+  height: 260px;
+
+  margin-top: 20px;
+}
+
+.memory-panel__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding-top: 16px;
+
+  border-top: 1px solid var(--line);
+
+  color: var(--muted);
+
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.memory-panel__footer span {
+  max-width: 170px;
+}
+
+.memory-panel__footer span:last-child {
+  text-align: right;
+}
+
+
+/* =========================
+   Note
+========================= */
+
+.climate-memory__note {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+
+  margin-top: 18px;
+
+  color: var(--muted);
+
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 900px) {
+  .climate-memory__top {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .climate-memory__period {
+    padding-left: 0;
+    padding-top: 18px;
+
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .climate-memory__visuals {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .climate-memory {
+    padding: 58px 0 62px;
+  }
+
+  .memory-panel {
+    padding: 22px;
+  }
+
+  .memory-panel__header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .memory-chart {
+    height: 230px;
+  }
+
+  .memory-panel__footer {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .memory-panel__footer span:last-child {
+    text-align: left;
+  }
+
+  .climate-memory__note {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
