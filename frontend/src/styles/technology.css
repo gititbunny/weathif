@@ -1,0 +1,538 @@
+/* =========================
+   Technology page
+========================= */
+
+.technology-page {
+  min-height: 100vh;
+
+  background: var(--paper);
+}
+
+
+/* =========================
+   Hero
+========================= */
+
+.technology-hero {
+  padding: 76px 0 82px;
+}
+
+.technology-hero__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 70px;
+  align-items: end;
+}
+
+.technology-hero h1 {
+  margin: 0;
+
+  font-size: clamp(3.3rem, 7vw, 7rem);
+  line-height: 0.89;
+  letter-spacing: -0.07em;
+  font-weight: 620;
+}
+
+.technology-hero__aside {
+  max-width: 520px;
+  justify-self: end;
+}
+
+.technology-hero__aside > p {
+  margin-top: 0;
+
+  color: var(--muted);
+
+  font-size: 1.04rem;
+  line-height: 1.75;
+}
+
+.technology-hero__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-top: 28px;
+}
+
+.technology-hero__stack span {
+  padding: 8px 12px;
+
+  border: 1px solid var(--line);
+  border-radius: 999px;
+
+  background: var(--paper-light);
+
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+
+/* =========================
+   Shared section heading
+========================= */
+
+.technology-section-heading {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr;
+  gap: 60px;
+  align-items: end;
+
+  margin-bottom: 42px;
+}
+
+.technology-section-heading h2,
+.technology-stack__header h2,
+.technology-request__heading h2,
+.technology-decisions h2 {
+  margin: 0;
+
+  font-size: clamp(2.6rem, 5vw, 5rem);
+  line-height: 0.94;
+  letter-spacing: -0.058em;
+  font-weight: 620;
+}
+
+.technology-section-heading > p {
+  max-width: 500px;
+  justify-self: end;
+
+  margin: 0;
+
+  color: var(--muted);
+
+  line-height: 1.7;
+}
+
+
+/* =========================
+   Architecture
+========================= */
+
+.technology-architecture {
+  padding: 80px 0 94px;
+
+  background: var(--water-soft);
+}
+
+.architecture-flow {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    80px
+    minmax(0, 1fr)
+    80px
+    minmax(0, 1fr);
+
+  align-items: stretch;
+}
+
+.architecture-node {
+  padding: 26px;
+
+  border: 1px solid rgba(24, 34, 29, 0.14);
+  border-radius: 24px;
+
+  background: var(--paper-light);
+}
+
+.architecture-node--backend {
+  background: var(--forest);
+  color: white;
+}
+
+.architecture-node__number {
+  margin-bottom: 54px;
+
+  color: var(--earth);
+
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.architecture-node--backend
+  .architecture-node__number {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.architecture-node > span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--muted);
+
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.architecture-node--backend > span {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.architecture-node h3 {
+  margin: 0 0 14px;
+
+  font-size: 1.45rem;
+  letter-spacing: -0.035em;
+}
+
+.architecture-node p {
+  min-height: 86px;
+
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.architecture-node--backend p {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.architecture-node__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  margin-top: 24px;
+}
+
+.architecture-node__tags span {
+  padding: 6px 8px;
+
+  border: 1px solid var(--line);
+  border-radius: 999px;
+
+  font-size: 0.64rem;
+}
+
+.architecture-node--backend
+  .architecture-node__tags span {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.architecture-connection {
+  display: grid;
+  place-items: center;
+
+  align-content: center;
+
+  color: var(--muted);
+}
+
+.architecture-connection span {
+  margin-bottom: 8px;
+
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.architecture-connection div {
+  font-size: 1.6rem;
+}
+
+
+/* =========================
+   Technical stack
+========================= */
+
+.technology-stack {
+  padding: 88px 0 96px;
+
+  background: var(--forest-dark);
+  color: white;
+}
+
+.technology-stack .eyebrow {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.technology-stack__header {
+  max-width: 780px;
+
+  margin-bottom: 42px;
+}
+
+.technology-stack__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.stack-panel {
+  min-height: 420px;
+
+  padding: 28px;
+
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.stack-panel__index {
+  display: block;
+
+  margin-bottom: 70px;
+
+  color: rgba(255, 255, 255, 0.38);
+
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.stack-panel h3 {
+  margin: 0 0 26px;
+
+  font-size: 2rem;
+  letter-spacing: -0.045em;
+}
+
+.stack-panel ul {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.stack-panel li {
+  padding: 12px 0;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  color: rgba(255, 255, 255, 0.66);
+
+  font-size: 0.82rem;
+}
+
+
+/* =========================
+   Request lifecycle
+========================= */
+
+.technology-request {
+  padding: 88px 0 94px;
+}
+
+.technology-request__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+
+  margin-bottom: 40px;
+}
+
+.technology-request__endpoint {
+  padding: 10px 14px;
+
+  border: 1px solid var(--line);
+  border-radius: 999px;
+
+  color: var(--muted);
+
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+.request-sequence {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.request-step {
+  min-width: 0;
+
+  padding: 26px 22px 30px 0;
+}
+
+.request-step + .request-step {
+  padding-left: 22px;
+
+  border-left: 1px solid var(--line);
+}
+
+.request-step > span {
+  display: block;
+
+  margin-bottom: 54px;
+
+  color: var(--earth);
+
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.request-step strong {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 1rem;
+}
+
+.request-step p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+
+/* =========================
+   Engineering decisions
+========================= */
+
+.technology-decisions {
+  padding: 88px 0 104px;
+
+  background: #ebe5d8;
+}
+
+.technology-decisions__grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 80px;
+}
+
+.technology-decisions__list article {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 20px;
+
+  padding: 25px 0;
+
+  border-top: 1px solid var(--line);
+}
+
+.technology-decisions__list article:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.technology-decisions__list
+  article
+  > span {
+  color: var(--earth);
+
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.technology-decisions__list h3 {
+  margin: 0 0 10px;
+
+  font-size: 1.18rem;
+  letter-spacing: -0.025em;
+}
+
+.technology-decisions__list p {
+  max-width: 590px;
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1000px) {
+  .technology-hero__grid,
+  .technology-section-heading,
+  .technology-decisions__grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .technology-hero__aside,
+  .technology-section-heading > p {
+    justify-self: start;
+  }
+
+  .architecture-flow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .architecture-connection {
+    min-height: 54px;
+  }
+
+  .architecture-connection div {
+    transform: rotate(90deg);
+  }
+
+  .technology-stack__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stack-panel {
+    min-height: auto;
+  }
+
+  .request-sequence {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .request-step:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .request-step:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 700px) {
+  .technology-hero {
+    padding: 54px 0 62px;
+  }
+
+  .technology-architecture,
+  .technology-stack,
+  .technology-request,
+  .technology-decisions {
+    padding-top: 62px;
+    padding-bottom: 68px;
+  }
+
+  .technology-request__heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .request-sequence {
+    grid-template-columns: 1fr;
+  }
+
+  .request-step {
+    padding: 24px 0;
+  }
+
+  .request-step + .request-step {
+    padding-left: 0;
+
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .request-step > span {
+    margin-bottom: 28px;
+  }
+}
