@@ -1,230 +1,451 @@
-# Weathif 🌦️🌍
+# Weathif
 
-![Weathif Logo](./assets/logo.png)
+![Weathif](frontend/public/images/climate-hero-poster.jpg)
 
-**Weathif** is an interactive local climate scenario simulator built with Python and Streamlit. It allows users to explore how hypothetical changes in temperature and rainfall could affect a selected local environment.
+**Weathif** is an interactive climate scenario simulator that combines current weather, historical climate context, seasonal outlooks, land and water conditions, global ENSO signals, and hypothetical temperature and rainfall scenarios in one visual environmental experience.
 
-Users can search for a location, view current weather information and interactive weather-map overlays, adjust temperature and rainfall scenarios, and compare the current conditions with the simulated future scenario.
+Users can search a real location, explore its environmental baseline, compare recent conditions with historical patterns, examine broader climate signals, and experiment with transparent climate scenarios.
 
-## Features
+### Live Project
 
-* Search for locations worldwide
-* Geocode locations using OpenStreetMap/Nominatim
-* Retrieve current temperature data
-* Estimate recent monthly rainfall using precipitation data
-* Adjust temperature from **-5°C to +5°C**
-* Adjust rainfall from **-100% to +100%**
-* Compare current and simulated conditions
-* Visualise climate scenarios with Matplotlib charts
-* Interactive Folium weather map
-* Rain, cloud and temperature map overlays
-* Adjustable weather-overlay opacity
-* Click directly on the map to change location
-* Reverse geocoding for map-selected locations
-* Generate a simple climate scenario report
-* Display potential environmental consequences based on simulated conditions
-* Responsive Streamlit interface
+**Website:** https://weathif.vercel.app  
+**API:** https://weathif-api.vercel.app
 
-## Tech Stack
+---
 
-**Application**
+## What Weathif Does
 
-* Python
-* Streamlit
+Weathif moves beyond a standard weather forecast by building several layers of environmental context around a real location.
 
-**Data & Visualisation**
+### Current Environmental Baseline
 
-* Pandas
-* Matplotlib
-* Folium
-* Streamlit Folium
+Search a location to retrieve:
 
-**Location & Geocoding**
+- Current temperature
+- Feels-like temperature
+- Humidity
+- Atmospheric pressure
+- Wind speed
+- Cloud cover
+- Weather conditions
+- Recent 30-day rainfall
 
-* Geopy
-* OpenStreetMap / Nominatim
+### Interactive Geographic Context
 
-**Weather Data**
+Users can:
 
-* OpenWeatherMap API
-* Open-Meteo Archive API
+- Search locations by name
+- View the selected location on an interactive map
+- Click the map to explore another location
+- Reverse-geocode map coordinates into place information
 
-**Development**
+### Climate Memory
 
-* Git
-* GitHub
+Recent conditions are compared with the same seasonal period across the previous 10 completed years.
 
-## How It Works
+The simulator visualises:
 
-The user begins by entering a location.
+- Recent mean temperature
+- Historical same-period temperature
+- Temperature difference
+- Recent rainfall
+- Historical rainfall
+- Rainfall percentage difference
 
-Weathif geocodes the location to obtain its latitude and longitude and retrieves weather information associated with those coordinates.
+This provides historical context rather than a formal climate normal.
 
-The simulator establishes baseline conditions using:
+### Seasonal Outlook
 
-* Current temperature data
-* Recent precipitation data used as a monthly rainfall proxy
+Weathif displays monthly seasonal anomaly signals from the ECMWF SEAS5 model through Open-Meteo.
 
-Users can then change two scenario variables:
+Separate visualisations show:
 
-**Temperature**
+- Temperature anomalies
+- Precipitation anomalies
+- Warmer or cooler tendencies
+- Wetter or drier tendencies
 
-* Between -5°C and +5°C from the baseline
+These are broad seasonal model signals, not precise local forecasts.
 
-**Rainfall**
+### ENSO Climate Context
 
-* Between -100% and +100% from the baseline
+The simulator retrieves current ENSO information from NOAA, including:
 
-Weathif calculates the simulated values and displays the current and future scenario side by side using a comparison chart.
+- ENSO phase
+- Advisory status
+- Niño 3.4
+- Oceanic Niño Index (ONI)
+- Multivariate ENSO Index (MEI V2)
+- Official NOAA outlook
 
-Based on the simulated conditions, the application also provides simple rule-based environmental impact indicators for conditions such as:
+ENSO is presented as global climate context and is not treated as a deterministic predictor of weather at a specific location.
 
-* Heat stress
-* Heatwave risk
-* Wildfire risk
-* Drought
-* Reduced water availability
-* Agricultural pressure
-* Flood risk
-* Waterlogging
+### Land & Water Conditions
 
-## Interactive Weather Map
+Additional environmental indicators include:
 
-Weathif includes an interactive map built with **Folium**.
+- Surface soil moisture
+- Root-zone soil moisture
+- Surface soil temperature
+- Soil temperature at depth
+- Vapour pressure deficit
+- Reference evapotranspiration
 
-Depending on the available weather data, users can display map overlays including:
+### Climate Scenario Lab
 
-* Rain
-* Clouds
-* Temperature
+Users can modify:
 
-Users can adjust overlay opacity and optionally click directly on the map to select a new location.
+- **Temperature:** -5°C to +5°C
+- **Rainfall:** -100% to +100%
 
-The selected coordinates are reverse-geocoded so the simulator can update the location and climate scenario.
+The interface previews the altered climate state in real time before sending the scenario to the backend.
 
-## Climate Scenario Visualisation
+The Python scenario engine then evaluates transparent environmental thresholds and returns contextual indicators.
 
-Weathif uses **Matplotlib** to compare baseline and simulated values for:
+---
 
-* Temperature
-* Monthly rainfall
+## Architecture
 
-This provides a quick visual representation of how the selected hypothetical changes alter local conditions.
+Weathif uses a separated frontend and backend architecture.
+
+```text
+User
+ │
+ ▼
+React + Vite Frontend
+weathif.vercel.app
+ │
+ │ REST API
+ ▼
+FastAPI + Python Backend
+weathif-api.vercel.app
+ │
+ ├── OpenWeatherMap
+ ├── Open-Meteo
+ ├── ECMWF SEAS5
+ ├── NOAA
+ ├── Nominatim
+ └── OpenStreetMap
+```
+
+The frontend is responsible for interaction and visualisation, while the backend handles environmental calculations, external service requests, validation, and API orchestration.
+
+Private API credentials remain server-side.
+
+---
+
+## Technology
+
+### Frontend
+
+- React
+- JavaScript
+- Vite
+- React Router
+- Recharts
+- React Leaflet
+- Leaflet
+- HTML
+- CSS
+- Responsive Design
+- Accessible interaction states
+
+### Backend
+
+- Python
+- FastAPI
+- Uvicorn
+- Requests
+- Beautiful Soup
+- Geopy
+- python-dotenv
+- REST API architecture
+
+### Data & Services
+
+- OpenWeatherMap
+- Open-Meteo
+- ECMWF SEAS5
+- NOAA Climate Prediction Center
+- NOAA Physical Sciences Laboratory
+- Nominatim
+- OpenStreetMap
+
+### Deployment
+
+- Vercel
+- GitHub
+
+---
 
 ## Project Structure
 
 ```text
 weathif/
-├── .streamlit/
-│   └── config.toml
-├── assets/
-│   ├── icon.png
-│   └── logo.png
-├── data/
-│   └── processed/
-│       └── johannesburg_2023_weather.csv
-├── app.py
-├── fetch_weather.py
-├── requirements.txt
-├── setup.py
+│
+├── backend/
+│   ├── services/
+│   │   ├── climate_memory.py
+│   │   ├── enso.py
+│   │   ├── environment.py
+│   │   ├── geocoding.py
+│   │   ├── scenario.py
+│   │   ├── seasonal_outlook.py
+│   │   ├── simulation.py
+│   │   └── weather.py
+│   │
+│   ├── .env.example
+│   ├── main.py
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── public/
+│   │   ├── images/
+│   │   ├── videos/
+│   │   └── logo.png
+│   │
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── styles/
+│   │
+│   ├── index.html
+│   ├── package.json
+│   ├── vercel.json
+│   └── vite.config.js
+│
+├── .gitignore
 └── README.md
 ```
 
-## Historical Weather Data
+---
 
-The project also contains `fetch_weather.py`, a supporting data utility that retrieves historical daily weather information from the **Open-Meteo Archive API**.
+## Main Pages
 
-The included example dataset contains Johannesburg weather data for 2023, including:
+### `/`
 
-* Daily maximum temperature
-* Daily minimum temperature
-* Daily precipitation
+A visual introduction to Weathif, its environmental layers, climate concepts, and scenario simulator.
 
-This supporting script demonstrates retrieving weather data from an external REST API, converting JSON responses into a Pandas DataFrame, and exporting processed data to CSV.
+### `/simulator`
 
-## Running the Project Locally
+The complete interactive climate workspace.
 
-Clone the repository:
+### `/methodology`
 
-```bash
-git clone https://github.com/gititbunny/weathif.git
+Explains how Weathif retrieves, compares, and interprets environmental data, including the limitations of the simulator.
+
+### `/technology`
+
+Documents the application architecture, technical stack, request lifecycle, and engineering decisions behind the project.
+
+---
+
+## API Endpoints
+
+The FastAPI backend exposes endpoints for the major application services.
+
+```text
+GET  /api/health
+GET  /api/geocode
+GET  /api/reverse-geocode
+GET  /api/weather
+GET  /api/environment
+GET  /api/climate-memory
+GET  /api/seasonal-outlook
+GET  /api/enso
+
+POST /api/scenario
+POST /api/simulate
 ```
 
-Navigate into the project:
+Example:
+
+```text
+https://weathif-api.vercel.app/api/health
+```
+
+---
+
+## Running Locally
+
+### 1. Clone the repository
 
 ```bash
+git clone <repository-url>
 cd weathif
 ```
 
-Create a virtual environment:
+### 2. Backend
 
 ```bash
+cd backend
 python -m venv .venv
 ```
 
-Activate it on Windows:
+Activate the environment.
+
+Windows:
 
 ```bash
-.\.venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
-Install the project dependencies:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Create a local Streamlit secrets file:
+Create:
 
 ```text
-.streamlit/secrets.toml
+backend/.env
 ```
 
-Add your OpenWeatherMap API key:
+Add:
 
-```toml
-OWM_API_KEY = "your_openweathermap_api_key"
+```env
+OWM_API_KEY=your_openweathermap_api_key
 ```
 
-Alternatively, `OWM_API_KEY` can be provided as an environment variable.
-
-Run the application:
+Start FastAPI:
 
 ```bash
-streamlit run app.py
+uvicorn main:app --reload
 ```
 
-## What This Project Demonstrates
+Backend:
 
-Weathif demonstrates practical experience with:
+```text
+http://127.0.0.1:8000
+```
 
-* Python application development
-* Interactive application development with Streamlit
-* REST API integration
-* JSON data processing
-* Pandas data manipulation
-* Data visualisation with Matplotlib
-* Interactive maps with Folium
-* Geocoding and reverse geocoding
-* Working with latitude and longitude data
-* Weather-data processing
-* Scenario-based calculations
-* User-controlled data visualisation
-* Session state management
-* API response caching
-* Error handling and fallback behaviour
-* Git and GitHub version control
+API documentation:
 
-## Important Note
+```text
+http://127.0.0.1:8000/docs
+```
 
-Weathif is an **exploratory scenario simulator**, not a scientific climate forecasting model.
+### 3. Frontend
 
-The rainfall baseline is based on recent precipitation data and is used as a simplified monthly rainfall proxy. Environmental consequences are generated using predefined scenario thresholds rather than a comprehensive climate model.
+Open another terminal:
 
-The results are intended to demonstrate climate-scenario exploration, data integration and visualisation rather than provide professional climate predictions.
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+The development frontend defaults to the local FastAPI server when no production API URL is configured.
+
+---
+
+## Environment Variables
+
+### Backend
+
+```env
+OWM_API_KEY=
+```
+
+The real key must never be committed to Git.
+
+### Frontend
+
+Production uses:
+
+```env
+VITE_API_BASE_URL=https://weathif-api.vercel.app
+```
+
+The API URL is public configuration and contains no private credentials.
+
+---
+
+## Data Transparency
+
+Weathif deliberately distinguishes between different kinds of environmental information.
+
+- Current weather is observational/API weather data.
+- Recent rainfall is a rolling recent-period baseline.
+- Climate Memory is a same-season historical comparison.
+- Seasonal Outlook values are model anomalies.
+- Soil and evapotranspiration values are modelled environmental data.
+- ENSO represents large-scale Pacific climate context.
+- Scenario results are application-defined hypothetical calculations.
+
+No failed API request is silently replaced with invented climate values.
+
+---
+
+## Scientific Boundaries
+
+Weathif is an **exploratory climate scenario simulator**.
+
+It is not:
+
+- A numerical climate model
+- A meteorological warning system
+- A disaster prediction service
+- An agricultural prescription tool
+- A substitute for professional scientific analysis
+
+Scenario thresholds are intentionally transparent and are designed for exploration rather than forecasting.
+
+---
+
+## Engineering Evolution
+
+Weathif began as a Python Streamlit prototype.
+
+The project was later rebuilt into a separated **React + FastAPI application** to improve:
+
+- Frontend architecture
+- Responsive design
+- Data visualisation
+- API security
+- Separation of concerns
+- Error handling
+- Maintainability
+- Deployment architecture
+- User experience
+
+The completed application keeps Python responsible for environmental logic while React handles the interactive product experience.
+
+---
+
+## Design
+
+The visual direction draws from environmental observation, climate research, land systems, atmospheric imagery, and scientific data interfaces.
+
+The interface uses:
+
+- Environmental photography
+- Interactive mapping
+- Climate charts
+- Historical comparisons
+- Ocean-inspired ENSO visualisation
+- Land and soil visual language
+- Responsive desktop and mobile layouts
+
+The goal is to make environmental information understandable without presenting uncertainty as certainty.
+
+---
 
 ## Author
 
-Built by **Git It Bunny**
+Built as a **Git It Bunny** project.
 
-[GitHub](https://github.com/gititbunny)
+---
+
+## License
+
+This project is intended for portfolio and educational use.
