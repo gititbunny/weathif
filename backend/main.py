@@ -30,7 +30,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 class ScenarioRequest(BaseModel):
     baseline_temperature: float = Field(
         ...,
