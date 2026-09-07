@@ -1,0 +1,362 @@
+/* =========================
+   Seasonal outlook
+========================= */
+
+.seasonal-outlook {
+  padding: 82px 0 88px;
+
+  background: #23362f;
+  color: white;
+}
+
+.seasonal-outlook .eyebrow {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.seasonal-outlook__header {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 64px;
+  align-items: end;
+}
+
+.seasonal-outlook__header h2 {
+  margin: 0;
+
+  font-size: clamp(2.7rem, 5vw, 5rem);
+  line-height: 0.94;
+  letter-spacing: -0.058em;
+  font-weight: 620;
+}
+
+.seasonal-outlook__summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  justify-self: end;
+  width: 100%;
+  max-width: 600px;
+}
+
+.outlook-signal {
+  padding: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.outlook-signal span {
+  display: block;
+
+  margin-bottom: 16px;
+
+  color: rgba(255, 255, 255, 0.44);
+
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.outlook-signal strong {
+  display: block;
+
+  font-size: 1rem;
+}
+
+.outlook-signal p {
+  margin: 7px 0 0;
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.outlook-signal--temperature {
+  border-top: 3px solid #df8a62;
+}
+
+.outlook-signal--rainfall {
+  border-top: 3px solid #8fc0d1;
+}
+
+
+/* =========================
+   Charts
+========================= */
+
+.seasonal-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  margin-top: 38px;
+}
+
+.seasonal-chart-card {
+  min-width: 0;
+
+  padding: 26px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 26px;
+
+  background: rgba(8, 26, 19, 0.24);
+}
+
+.seasonal-chart-card--temperature {
+  border-top: 4px solid #df8a62;
+}
+
+.seasonal-chart-card--rainfall {
+  border-top: 4px solid #8fc0d1;
+}
+
+.seasonal-chart-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.seasonal-chart-card__header span {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: rgba(255, 255, 255, 0.44);
+
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.seasonal-chart-card__header h3 {
+  margin: 0;
+
+  font-size: 1.4rem;
+  letter-spacing: -0.03em;
+}
+
+.seasonal-chart-key {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: rgba(255, 255, 255, 0.48);
+
+  font-size: 0.68rem;
+}
+
+.seasonal-chart-key i {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+}
+
+.seasonal-chart-card--temperature
+  .seasonal-chart-key i {
+  background: #df8a62;
+}
+
+.seasonal-chart-card--rainfall
+  .seasonal-chart-key i {
+  background: #8fc0d1;
+}
+
+.seasonal-chart {
+  width: 100%;
+  height: 290px;
+
+  margin-top: 20px;
+}
+
+.seasonal-chart-card__scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding-top: 14px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 0.67rem;
+}
+
+
+/* =========================
+   Month summary
+========================= */
+
+.seasonal-months {
+  display: grid;
+  grid-template-columns:
+    repeat(6, minmax(0, 1fr));
+
+  margin-top: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+
+  overflow: hidden;
+}
+
+.seasonal-month-summary {
+  min-width: 0;
+
+  padding: 17px 14px;
+}
+
+.seasonal-month-summary
+  + .seasonal-month-summary {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.seasonal-month-summary strong {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.seasonal-month-summary span {
+  display: block;
+
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.seasonal-month-summary__temperature {
+  color: #df8a62;
+}
+
+.seasonal-month-summary__rainfall {
+  margin-top: 5px;
+
+  color: #8fc0d1;
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+.seasonal-outlook__footer {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: center;
+
+  margin-top: 22px;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.seasonal-outlook__footer p {
+  margin: 0;
+
+  text-align: center;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1000px) {
+  .seasonal-outlook__header {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .seasonal-outlook__summary {
+    justify-self: start;
+    max-width: none;
+  }
+
+  .seasonal-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .seasonal-months {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .seasonal-month-summary:nth-child(4) {
+    border-left: 0;
+    border-top:
+      1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .seasonal-month-summary:nth-child(n + 5) {
+    border-top:
+      1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .seasonal-outlook__footer {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .seasonal-outlook__footer p {
+    text-align: left;
+  }
+}
+
+@media (max-width: 700px) {
+  .seasonal-outlook {
+    padding: 60px 0 64px;
+  }
+
+  .seasonal-outlook__summary {
+    grid-template-columns: 1fr;
+  }
+
+  .seasonal-chart-card {
+    padding: 20px;
+  }
+
+  .seasonal-chart {
+    height: 250px;
+  }
+
+  .seasonal-chart-card__header {
+    flex-direction: column;
+  }
+
+  .seasonal-months {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .seasonal-month-summary:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .seasonal-month-summary:nth-child(n + 3) {
+    border-top:
+      1px solid rgba(255, 255, 255, 0.1);
+  }
+}
